@@ -1,6 +1,19 @@
-FROM python:3.11-slim
+# Base image for Python 3.12 on Windows-compatible (use Linux container if needed)
+FROM python:3.12-slim
+
+# Set workdir
 WORKDIR /app
-COPY pyproject.toml /app/
-RUN pip install --no-cache-dir pip && pip install --no-cache-dir poetry || true
-COPY . /app
-CMD ["python", "-m", "pytest"]
+
+# Install uv for env management
+RUN pip install uv
+
+# Copy project files
+COPY . .
+
+# Setup virtual env and install deps
+RUN uv venv .venv && \
+    . .venv/bin/activate && \
+    uv pip install -r pyproject.toml
+
+# Default command: Run tests
+CMD ["pytest"]

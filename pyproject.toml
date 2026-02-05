@@ -1,4 +1,46 @@
-[tool.poetry]
+[project]
+name = "project-chimera"
+version = "0.1.0"
+description = "Project Chimera"
+dependencies = [
+  "pydantic",
+  "redis",
+  "weaviate-client",
+  "coinbase-agentkit",
+  "pytest",
+]
+
+[tool.uv]
+python = "3.12"
+[project]
+name = "project-chimera"
+version = "0.1.0"
+description = "Project Chimera"
+dependencies = [
+  "pydantic",
+  "redis",
+  "weaviate-client",
+  "coinbase-agentkit",
+  "pytest",
+]
+
+[tool.uv]
+python = "3.12"
+pyproject.toml (For uv/Python env management)
+toml[project]
+name = "project-chimera"
+version = "0.1.0"
+dependencies = [
+    "pydantic",
+    "redis",
+    "weaviate-client",
+    "coinbase-agentkit",  # For Agentic Commerce
+    "pytest",  # For testing
+    # Add more as specs evolve (no installs beyond basics yet)
+]
+
+[tool.uv]
+python = "3.12"[tool.poetry]
 name = "project-chimera"
 version = "0.1.0"
 description = "Project Chimera"
