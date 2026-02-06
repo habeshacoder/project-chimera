@@ -1,0 +1,36 @@
+.venv
+
+# Python Artifacts & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# version control and ide
+.git
+.gitignore
+.gitattributes
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# environment variables
+.env
+.env.*
+secrets/
+*.pem
+*.key
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
