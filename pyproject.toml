@@ -14,4 +14,4 @@ dependencies = [
 
 [tool.uv]
 # Optional uv settings (add if needed later)
-# python-preference = "only-system"  # Example: prefer system Python over managed downloads
+# python-preference = "only-system"
