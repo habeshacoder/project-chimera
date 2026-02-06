@@ -1,8 +1,8 @@
-Markdown# Technical Specifications
+# Technical Specifications
 
 ## API Contracts (Pydantic Schemas)
 
-Example: Task Payload (JSON)
+### Task Payload
 
 ```python
 from pydantic import BaseModel, UUID4
@@ -18,23 +18,265 @@ class AgentTask(BaseModel):
     status: str  # "pending|in_progress|review|complete"
 ```
 
-Database Schema (ERD in Mermaid)
-#mermaid-diagram-mermaid-l0rwynu{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#000000;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-diagram-mermaid-l0rwynu .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-diagram-mermaid-l0rwynu .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-diagram-mermaid-l0rwynu .error-icon{fill:#552222;}#mermaid-diagram-mermaid-l0rwynu .error-text{fill:#552222;stroke:#552222;}#mermaid-diagram-mermaid-l0rwynu .edge-thickness-normal{stroke-width:1px;}#mermaid-diagram-mermaid-l0rwynu .edge-thickness-thick{stroke-width:3.5px;}#mermaid-diagram-mermaid-l0rwynu .edge-pattern-solid{stroke-dasharray:0;}#mermaid-diagram-mermaid-l0rwynu .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-diagram-mermaid-l0rwynu .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-diagram-mermaid-l0rwynu .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-diagram-mermaid-l0rwynu .marker{fill:#666;stroke:#666;}#mermaid-diagram-mermaid-l0rwynu .marker.cross{stroke:#666;}#mermaid-diagram-mermaid-l0rwynu svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-diagram-mermaid-l0rwynu p{margin:0;}#mermaid-diagram-mermaid-l0rwynu .entityBox{fill:#eee;stroke:#999;}#mermaid-diagram-mermaid-l0rwynu .relationshipLabelBox{fill:hsl(-160, 0%, 93.3333333333%);opacity:0.7;background-color:hsl(-160, 0%, 93.3333333333%);}#mermaid-diagram-mermaid-l0rwynu .relationshipLabelBox rect{opacity:0.5;}#mermaid-diagram-mermaid-l0rwynu .labelBkg{background-color:rgba(237.9999999999, 237.9999999999, 237.9999999999, 0.5);}#mermaid-diagram-mermaid-l0rwynu .edgeLabel .label{fill:#999;font-size:14px;}#mermaid-diagram-mermaid-l0rwynu .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#000000;}#mermaid-diagram-mermaid-l0rwynu .edge-pattern-dashed{stroke-dasharray:8,8;}#mermaid-diagram-mermaid-l0rwynu .node rect,#mermaid-diagram-mermaid-l0rwynu .node circle,#mermaid-diagram-mermaid-l0rwynu .node ellipse,#mermaid-diagram-mermaid-l0rwynu .node polygon{fill:#eee;stroke:#999;stroke-width:1px;}#mermaid-diagram-mermaid-l0rwynu .relationshipLine{stroke:#666;stroke-width:1;fill:none;}#mermaid-diagram-mermaid-l0rwynu .marker{fill:none!important;stroke:#666!important;stroke-width:1;}#mermaid-diagram-mermaid-l0rwynu :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}#mermaid-diagram-mermaid-l0rwynu p{margin:0;}assignsownsAGENTuuididstrnamestrwallet_addressstrpersona_soul_md_hashTASKuuididstrtypefloatconfidence_scoredatetimecreated_atstrstatusTRANSACTIONuuididfloatamount_usdcstrto_addressboolapproved
+### Trend Fetcher API
 
-## MCP Tool Example
+```python
+from pydantic import BaseModel
+from typing import List, Dict, Any
 
-JSON{
-"name": "post_content",
-"description": "Publishes to social platform",
-"inputSchema": {
-"type": "object",
-"properties": {
-"platform": {"type": "string", "enum": ["twitter", "instagram"]},
-"text": {"type": "string"},
-"media_urls": {"type": "array", "items": {"type": "string"}}
+class TrendInput(BaseModel):
+    query: str  # e.g., "fashion Ethiopia"
+    limit: int = 5  # Maximum number of trends to return
+
+class TrendOutput(BaseModel):
+    trends: List[Dict[str, Any]]  # [{"topic": str, "relevance": float, "source": str}]
+```
+
+### Content Generator API
+
+```python
+from pydantic import BaseModel
+from typing import Literal
+
+class ContentInput(BaseModel):
+    type: Literal["text", "image", "video"]
+    prompt: str
+    persona_id: str
+
+class ContentOutput(BaseModel):
+    artifact_url: str
+    confidence: float  # 0.0 to 1.0
+```
+
+### Transaction Executor API
+
+```python
+from pydantic import BaseModel
+
+class TxInput(BaseModel):
+    to_address: str  # Ethereum address
+    amount_usdc: float  # Amount in USDC
+
+class TxOutput(BaseModel):
+    tx_hash: str  # Transaction hash
+    success: bool
+```
+
+### Error Response Schema
+
+```python
+from pydantic import BaseModel
+from typing import Optional
+
+class ErrorResponse(BaseModel):
+    error_code: str
+    message: str
+    details: Optional[dict] = None
+```
+
+## Database Schema (ERD)
+
+```mermaid
+erDiagram
+    AGENT ||--o{ TASK : assigns
+    AGENT ||--o{ TRANSACTION : owns
+    TASK ||--o| TRANSACTION : triggers
+    
+    AGENT {
+        uuid id PK
+        string name
+        string wallet_address UK
+        string persona_soul_md_hash
+        datetime created_at
+        datetime updated_at
+    }
+    
+    TASK {
+        uuid id PK
+        uuid agent_id FK
+        string type
+        float confidence_score
+        datetime created_at
+        datetime updated_at
+        string status
+        json context
+    }
+    
+    TRANSACTION {
+        uuid id PK
+        uuid task_id FK
+        uuid agent_id FK
+        float amount_usdc
+        string to_address
+        string tx_hash UK
+        bool approved
+        datetime created_at
+    }
+```
+
+### Database Indexes
+
+- `AGENT.wallet_address` - Unique index for wallet lookups
+- `TASK.agent_id` - Index for agent task queries
+- `TASK.status` - Index for status filtering
+- `TASK.created_at` - Index for time-based queries
+- `TRANSACTION.tx_hash` - Unique index for transaction lookups
+- `TRANSACTION.agent_id` - Index for agent transaction history
+
+### Database Constraints
+
+- `TASK.confidence_score` - CHECK constraint: 0.0 <= confidence_score <= 1.0
+- `TASK.status` - CHECK constraint: status IN ('pending', 'in_progress', 'review', 'complete', 'failed')
+- `TRANSACTION.amount_usdc` - CHECK constraint: amount_usdc > 0
+
+## MCP Tool Definitions
+
+### post_content Tool
+
+```json
+{
+  "name": "post_content",
+  "description": "Publishes content to social platform",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "platform": {
+        "type": "string",
+        "enum": ["twitter", "instagram", "tiktok"]
+      },
+      "text": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 280
+      },
+      "media_urls": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "uri"
+        },
+        "maxItems": 4
+      }
+    },
+    "required": ["platform", "text"]
+  }
 }
+```
+
+### fetch_trends Tool
+
+```json
+{
+  "name": "fetch_trends",
+  "description": "Fetches semantic trends via MCP resources",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "minLength": 1
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 5
+      },
+      "source": {
+        "type": "string",
+        "enum": ["news", "social", "all"],
+        "default": "all"
+      }
+    },
+    "required": ["query"]
+  }
 }
+```
+
+### generate_content Tool
+
+```json
+{
+  "name": "generate_content",
+  "description": "Generates multi-modal content with consistency lock",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": ["text", "image", "video"]
+      },
+      "prompt": {
+        "type": "string",
+        "minLength": 1
+      },
+      "persona_id": {
+        "type": "string"
+      }
+    },
+    "required": ["type", "prompt", "persona_id"]
+  }
 }
+```
+
+### execute_transaction Tool
+
+```json
+{
+  "name": "execute_transaction",
+  "description": "Executes on-chain transaction via Coinbase AgentKit",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "to_address": {
+        "type": "string",
+        "pattern": "^0x[a-fA-F0-9]{40}$"
+      },
+      "amount_usdc": {
+        "type": "number",
+        "minimum": 0.01
+      }
+    },
+    "required": ["to_address", "amount_usdc"]
+  }
+}
+```
+
+### get_agent_status Resource
+
+```json
+{
+  "uri": "agent://status/{agent_id}",
+  "mimeType": "application/json",
+  "name": "Agent Status",
+  "description": "Returns current status and capabilities of an agent",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "agent_id": {
+        "type": "string"
+      },
+      "available": {
+        "type": "boolean"
+      },
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "current_tasks": {
+        "type": "integer"
+      },
+      "last_heartbeat": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": ["agent_id", "available", "skills"]
+  }
+}
+```
 
 # Technical Specification
 

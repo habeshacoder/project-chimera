@@ -24,6 +24,9 @@ jobs:
       - name: Setup env
         run: make setup
 
+      - name: Spec Check
+        run: make spec-check
+
       - name: Run Tests
         run: make test # Failing tests OK
         continue-on-error: true

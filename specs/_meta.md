@@ -1,4 +1,4 @@
-Markdown# Meta Specification
+# Meta Specification
 
 ## Vision
 

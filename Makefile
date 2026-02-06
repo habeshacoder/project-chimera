@@ -15,7 +15,7 @@ else
     CLEAN_VENV := rm -rf .venv
 endif
 
-.PHONY: setup clean-venv test help
+.PHONY: setup clean-venv test spec-check help
 
 # --- Targets ---
 
@@ -25,6 +25,7 @@ help:
 	@echo make setup        - Create venv and sync all dependencies
 	@echo make clean-venv   - Remove the .venv folder
 	@echo make test         - Build and run Docker tests
+	@echo make spec-check   - Validate specs alignment with code
 	@echo make help         - Show this help
 
 setup: clean-venv
@@ -46,3 +47,7 @@ test:
 	docker build -t chimera-test .
 	@echo ============ Running Docker tests...
 	docker run --rm chimera-test
+
+spec-check:
+	@echo Running spec validation...
+	python scripts/validate_specs.py
