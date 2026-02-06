@@ -30,22 +30,28 @@ help:
 
 setup: clean-venv
 	@echo [1/2] Creating virtual environment and syncing dependencies...
-	uv sync
+	@echo "Setting UV_HTTP_TIMEOUT to 180s for slow network connections..."
+ifeq ($(OS),Windows_NT)
+	@set UV_HTTP_TIMEOUT=180 && uv sync || (echo Retrying with increased timeout... && set UV_HTTP_TIMEOUT=300 && uv sync)
+else
+	@UV_HTTP_TIMEOUT=180 uv sync || (echo "Retrying with increased timeout (300s)..." && UV_HTTP_TIMEOUT=300 uv sync)
+endif
 	@echo [2/2] Setup complete.
 	@echo ""
 	@echo To activate the venv:
 	@echo "  Windows (cmd):      .venv\\Scripts\\activate.bat"
 	@echo "  Windows (PS):       .venv\\Scripts\\Activate.ps1"
 	@echo "  Unix/Git Bash:      source .venv/Scripts/activate   (or .venv/bin/activate)"
+	@echo "  macOS:      source .venv/bin/activate   (or .venv/bin/activate)"
 
 clean-venv:
 	@echo Cleaning .venv...
 	-@$(CLEAN_VENV)
 
 test:
-	@echo Building Docker image...
-	docker build -t chimera-test .
-	@echo ============ Running Docker tests...
+	@echo "Building Docker image (no cache to ensure latest changes)..."
+	docker build  -t chimera-test .
+	@echo "============ Running Docker tests..."
 	docker run --rm chimera-test
 
 spec-check:

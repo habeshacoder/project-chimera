@@ -1,4 +1,7 @@
 {
   "CodeGPT.apiKey": "DeepSeek",
-  "makefile.configureOnOpen": false
+  "makefile.configureOnOpen": false,
+  "yaml.schemas": {
+    ".vscode/coderabbit-schema.json": [".coderabbit.yaml"]
+  }
 }

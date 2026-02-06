@@ -5,6 +5,9 @@ WORKDIR /app
 # Install uv
 RUN pip install uv
 
+# Set uv timeout longer and clear cache to avoid extraction issues
+ENV UV_HTTP_TIMEOUT=120
+
 # Copy dependency files
 COPY pyproject.toml ./
 

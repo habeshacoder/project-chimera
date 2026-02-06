@@ -29,20 +29,20 @@ prompts:
   - name: spec_alignment
     instructions: |
       Check if code changes align with specifications in specs/ directory.
-      
+
       CRITICAL CHECKS:
       1. Verify API contracts match specs/technical.md schemas
       2. Ensure skill implementations match their README contracts in skills/
       3. Check that user stories in specs/functional.md are respected
       4. Validate database schema changes align with ERD in specs/technical.md
       5. Confirm OpenClaw integration follows specs/openclaw_integration.md
-      
+
       If code deviates from specs, flag as "Spec Misalignment" and suggest corrections.
-    
+
   - name: security_check
     instructions: |
       Check for security vulnerabilities:
-      
+
       SECURITY CHECKS:
       1. Hardcoded secrets or API keys - FLAG IMMEDIATELY
       2. SQL injection risks in database queries
@@ -52,24 +52,24 @@ prompts:
       6. Missing authentication/authorization checks
       7. Unsafe deserialization
       8. XSS vulnerabilities in content generation
-      
+
       Rate severity: CRITICAL, HIGH, MEDIUM, LOW
-    
+
   - name: tdd_compliance
     instructions: |
       Verify Test-Driven Development compliance:
-      
+
       TDD CHECKS:
       1. New code should have corresponding tests
       2. Tests should exist before implementation (TDD principle)
       3. Test coverage should be maintained
       4. Failing tests should be fixed before merging
       5. Test names should be descriptive and follow pattern: test_<functionality>_<scenario>
-    
+
   - name: mcp_integration
     instructions: |
       Check MCP integration patterns:
-      
+
       MCP CHECKS:
       1. External API calls should use MCP tools, not direct API calls
       2. MCP resource access should follow patterns in specs/technical.md
