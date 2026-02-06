@@ -1,21 +1,17 @@
-# pyproject.toml - Project configuration for uv (fast Python package & venv manager)
-
 [project]
 name = "project-chimera"
 version = "0.1.0"
 description = "Autonomous Influencer Network - Project Chimera infrastructure"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12"          # This constrains the project to Python 3.12+
 dependencies = [
-    "pydantic",                # For strict data models/schemas
-    "redis",                   # Task/Review queues + episodic cache
-    "weaviate-client",         # Vector DB for semantic/long-term memory + RAG
-    "coinbase-agentkit",       # Agentic Commerce - wallets & on-chain tx
-    "pytest",                  # Testing framework
-
-    # Add more later as implementation progresses (e.g. langchain, docker, etc.)
+    "pydantic",
+    "redis",
+    "weaviate-client",
+    "coinbase-agentkit",
+    "pytest",
 ]
 
 [tool.uv]
-# uv-specific settings
-python = "3.12"  # Preferred Python version for venv creation
+# Optional uv settings (add if needed later)
+# python-preference = "only-system"  # Example: prefer system Python over managed downloads
