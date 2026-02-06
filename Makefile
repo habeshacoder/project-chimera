@@ -31,11 +31,11 @@ setup: clean-venv
 	@echo [1/2] Creating virtual environment and syncing dependencies...
 	uv sync
 	@echo [2/2] Setup complete.
-	@echo.
+	@echo ""
 	@echo To activate the venv:
-	@echo   Windows (cmd):      .venv\Scripts\activate.bat
-	@echo   Windows (PS):       .venv\Scripts\Activate.ps1
-	@echo   Unix/Git Bash:      source .venv/bin/activate (or Scripts/activate)
+	@echo "  Windows (cmd):      .venv\\Scripts\\activate.bat"
+	@echo "  Windows (PS):       .venv\\Scripts\\Activate.ps1"
+	@echo "  Unix/Git Bash:      source .venv/Scripts/activate   (or .venv/bin/activate)"
 
 clean-venv:
 	@echo Cleaning .venv...
