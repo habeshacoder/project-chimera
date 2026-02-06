@@ -1,4 +1,3 @@
-
 # --- Platform Detection ---
 ifeq ($(OS),Windows_NT)
     # Windows (CMD or PowerShell)
@@ -45,3 +44,5 @@ clean-venv:
 test:
 	@echo Building Docker image...
 	docker build -t chimera-test .
+	@echo ============ Running Docker tests...
+	docker run --rm chimera-test

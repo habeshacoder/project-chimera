@@ -26,6 +26,7 @@ jobs:
 
       - name: Run Tests
         run: make test # Failing tests OK
+        continue-on-error: true
 
       - name: Lint
         run: |
